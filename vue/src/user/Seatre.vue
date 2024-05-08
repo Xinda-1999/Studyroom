@@ -1,5 +1,30 @@
 <template>
-  <div>
+  <div class="root">
+    <!-- 标题 -->
+    <div class="title">图书馆预约</div>
+    <!-- 右侧布局，包含一张图片 -->
+    <div class="right-content">
+      <img src="../assets/library.png" alt="图书馆图片" style="width: 70%;">
+    </div>
+    <!-- 左侧布局 -->
+    <div class="left-content">
+      <el-card style="margin-top: 20px; position: relative">
+        <div slot="header" class="clearfix" style="text-align: center;">
+          <!-- 添加一个日期选择器 -->
+          <el-date-picker v-model="selectedDate" type="date" placeholder="选择日期" :picker-options="pickerOptions"></el-date-picker>
+          <!-- 添加一个场次选择器 -->
+          <el-select v-model="selectedTime" placeholder="选择场次">
+            <el-option label="上午" value="morning"></el-option>
+            <el-option label="下午" value="afternoon"></el-option>
+            <el-option label="晚上" value="evening"></el-option>
+          </el-select>
+          <!-- 添加一个查看座位按钮 -->
+          <el-button type="primary" @click="viewSeats">查看座位</el-button>
+        </div>
+
+      </el-card>
+    </div>
+
     <navbar title="预约座位" :left="false">
       <Score slot="right"></Score>
     </navbar>
@@ -16,11 +41,7 @@
         </div>
       </Area>
     </el-card>
-    <el-card>
-      <van-cell title="座位" :value="seatName"/>
-      <TimeSlider ref="timeSlider"></TimeSlider>
-    </el-card>
-    <div class="btn" @click="submit">预约</div>
+
   </div>
 </template>
 
@@ -36,46 +57,37 @@ import {Toast} from "vant";
 import Score from "@/components/Score";
 
 export default {
-  name: "Reservation",
   components: {Score, TimeSlider, ToggleArea, HeadTip, Navbar, Area},
   data() {
+
     return {
-      areaRows: null,
-      seatRows: null,
+      selectedDate: '', // 选择的日期
+      selectedTime: '', // 选择的场次
+      areaRows: null, // 区域信息
+      seatRows: null, // 座位信息，根据日期和场次获取
       seatCurIndex: 0,
-      seatName: '请选择座位',
-    }
+      pickerOptions: {
+        disabledDate: time => {
+          const now = new Date();
+          const weekLater = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
+          return time.getTime() < now.getTime() || time.getTime() > weekLater.getTime();
+        }
+      }
+    };
+  },
+  components: {
+    ToggleArea, // 在components中声明ToggleArea组件
+    Area
   },
   methods: {
-    submit() {
-      if (this.seatName === '请选择座位') {
-        Toast.fail('请选择座位')
-        return
+    async viewSeats() {
+      try {
+        const response = await fetch(`/api/seats?date=${this.selectedDate}&time=${this.selectedTime}`);
+        const data = await response.json();
+        this.seatRows = data.seats;
+      } catch (error) {
+        console.error('获取座位信息失败：', error);
       }
-      if (new Date().getHours()>=22) {
-        Toast.fail('22点之后无法预约')
-        return
-      }
-      this.$nextTick(() => {
-        let body={
-          startTime: this.$refs.timeSlider.getStartTime(),
-          endTime: this.$refs.timeSlider.getEndTime(),
-          uid: this.$getUser().uid,
-          sid: this.seatRows[this.seatCurIndex].sid
-        }
-        if (body.startTime===body.endTime){
-          Toast.fail('时间非法！')
-          return
-        }
-        request.post('/user/addReservation',body ).then(res => {
-          if (res.code === 200) {
-            Toast.success('预约成功')
-            this.togglePage()
-          } else {
-            Toast.fail('预约失败，当前已有预约')
-          }
-        })
-      })
     },
     togglePage() {
       //当前有待操作的预约则跳转到操作页
@@ -143,5 +155,27 @@ export default {
 </script>
 
 <style scoped>
+.root {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
 
+.title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  text-align: center;
+  margin-top: 20px; /* 添加上边距 */
+}
+
+.left-content {
+  width: 70%;
+}
+
+.right-content {
+  width: 50%; /* 调整为 50% */
+  margin-bottom: 20px; /* 添加一些底部间距 */
+}
 </style>

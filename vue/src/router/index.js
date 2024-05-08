@@ -68,6 +68,10 @@ const routes = [
                         component: () => import('../user/BeUse')
                     }
                 ]
+            },
+            {
+                path: 'seatre',
+                component: () => import('../user/Seatre') // 导入你的新页面组件
             }
 
         ]

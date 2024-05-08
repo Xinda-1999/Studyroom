@@ -1,23 +1,19 @@
 <template>
   <div>
-  <div style="display: flex; justify-content: center">
-    <van-cell title="起止时间" style="flex-basis: 30%">
+    <van-cell title="起止时间">
       <div style="display: flex;justify-content: end">
         <van-button size="mini" plain type="primary">{{ startText }}</van-button>
         <div>--</div>
         <van-button size="mini" plain type="info">{{ endText }}</van-button>
       </div>
     </van-cell>
-  </div>
-  <div style="margin: 0 auto; width: 70%">
-    <div class="block" style="margin: 30px 0 1em 0;">
+    <div class="block" style="margin: 3px 0 1em 0;">
       <el-slider @change="updateTime" :disabled="disable"
                  v-model="value" :marks="marks"
                  range :min="min" :max="max" :format-tooltip="formatToolTip"
                  show-stops>
       </el-slider>
     </div>
-  </div>
   </div>
 </template>
 

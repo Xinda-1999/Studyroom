@@ -8,18 +8,12 @@
       <div slot="header" class="clearfix">
         <span style="margin-left: 1em">座位信息</span>
       </div>
-      <div class="flex-box">
-        <van-cell class="van-cell" title="座位号" :value="item.subName + item.row + item.column"/>
-      </div>
-      <div class="flex-box">
-        <van-cell class="van-cell" title="区域名" :value="item.areaName"/>
-      </div>
+      <van-cell title="座位号" :value="item.subName + item.row + item.column"/>
+      <van-cell title="区域名" :value="item.areaName"/>
       <TimeSlider :disable="true" :start-time="item.startTime" :end-time="item.endTime"></TimeSlider>
-      <div class="flex-box">
-        <van-cell class="van-cell" title="签到码" style="margin-top: 200px">
-          <van-field v-model="number" type="digit" placeholder="请询问管理员"/>
-        </van-cell>
-      </div>
+      <van-cell title="签到码" style="margin-top: 20%">
+        <van-field v-model="number" type="digit" placeholder="请询问管理员"/>
+      </van-cell>
     </el-card>
     <div class="btn" @click="submit">{{ stateName }}签到</div>
 
@@ -78,19 +72,5 @@ export default {
 </script>
 
 <style scoped>
-  .flex-box {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  .van-cell{
-    flex-basis: 30%;
-  }
-  .btn {
-    width: 300px;
-    left: 0;
-    right: 0;
-    margin: 1em auto;
-    bottom: 84px;
-  }
+
 </style>

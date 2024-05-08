@@ -20,7 +20,7 @@ export default {
     return {
       active: 0,
       tabs: [
-        //{name: '论坛', url: '/student/forum'},
+        {name: '预约座位', url: '/student/seatre'},
         {name: '座位', url: '/student/seat/reservation'}]
     }
   },

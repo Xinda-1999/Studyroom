@@ -120,15 +120,11 @@ export default {
   /*background: #e4e4e4;*/
   grid-template-rows: repeat(9, 32px);
   grid-template-columns: repeat(25, 32px);
-  justify-content: center;
 }
 
 .item {
   width: 32px;
   height: 32px;
-  .seat {
-    background-color: #ffffff;
-  }
 }
 
 
