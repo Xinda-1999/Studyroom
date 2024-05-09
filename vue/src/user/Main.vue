@@ -21,7 +21,8 @@ export default {
       active: 0,
       tabs: [
         {name: '预约座位', url: '/student/seatre'},
-        {name: '座位', url: '/student/seat/reservation'}]
+        {name: '抢座', url: '/student/seat/reservation'},
+        {name :"个人中心",url:'/student/announce'}]
     }
   },
   methods: {

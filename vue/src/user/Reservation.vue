@@ -1,6 +1,6 @@
 <template>
   <div>
-    <navbar title="预约座位" :left="false">
+    <navbar title="抢座" :left="false">
       <Score slot="right"></Score>
     </navbar>
     <el-card style="overflow: scroll;">
@@ -20,7 +20,7 @@
       <van-cell title="座位" :value="seatName"/>
       <TimeSlider ref="timeSlider"></TimeSlider>
     </el-card>
-    <div class="btn" @click="submit">预约</div>
+    <div class="btn" @click="submit">抢座</div>
   </div>
 </template>
 
@@ -37,7 +37,7 @@ import Score from "@/components/Score";
 
 export default {
   name: "Reservation",
-  components: {Score, TimeSlider, ToggleArea, HeadTip, Navbar, Area},
+  components: {TimeSlider, ToggleArea, HeadTip, Navbar, Area},
   data() {
     return {
       areaRows: null,

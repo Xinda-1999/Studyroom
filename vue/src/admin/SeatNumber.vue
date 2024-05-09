@@ -11,6 +11,7 @@
         </div>
       </Area>
     </el-card>
+    <div class="qrcode" ref="qrCodeUrl"></div>
   </div>
 </template>
 
@@ -19,6 +20,7 @@ import Area from "@/components/Area";
 import request from "@/req";
 import HeadTip from "@/components/HeadTip";
 import ToggleArea from "@/components/ToggleArea";
+import QRCode from "qrcodejs2";
 
 export default {
   name: "SeatNumber",
@@ -52,6 +54,16 @@ export default {
         })
       })
 
+    },
+    creatQrCode() {
+      var qrcode = new QRCode(this.$refs.qrCodeUrl, {
+        text: "https://blog.csdn.net/weixin_42601136", // 需要转换为二维码的内容
+        width: 100,
+        height: 100,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRCode.CorrectLevel.H,
+      });
     }
   },
   created() {
@@ -59,6 +71,9 @@ export default {
       this.areaRows = res.rows
       this.getSeatRows()
     })
+  },
+  mounted() {
+    this.creatQrCode();
   }
 }
 </script>
@@ -70,6 +85,13 @@ export default {
   flex-direction: column;
   align-items: center;
 }
-
+.qrcode {
+  display: inline-block;
+  width: 132px;
+  height: 132px;
+  background-color: #fff;
+  padding: 6px;
+  box-sizing: border-box;
+}
 
 </style>

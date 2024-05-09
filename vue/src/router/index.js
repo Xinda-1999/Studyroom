@@ -54,6 +54,10 @@ const routes = [
                 component: () => import('../user/Forum')
             },
             {
+                path: 'announce',
+                component: () => import('../user/UserManagement')
+            },
+            {
                 path: 'seat',
                 component: () => import('../user/Seat'),
                 children: [

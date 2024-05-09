@@ -21,7 +21,6 @@
           <!-- 添加一个查看座位按钮 -->
           <el-button type="primary" @click="viewSeats">查看座位</el-button>
         </div>
-
       </el-card>
     </div>
 
@@ -40,8 +39,12 @@
           </div>
         </div>
       </Area>
-    </el-card>
 
+      <!-- 在这里添加一个预约按钮 -->
+      <div style="text-align: center; margin-top: 20px;">
+        <el-button type="primary">预约</el-button>
+      </div>
+    </el-card>
   </div>
 </template>
 
@@ -56,10 +59,10 @@ import TimeSlider from "@/components/TimeSlider";
 import {Toast} from "vant";
 import Score from "@/components/Score";
 
-export default {
-  components: {Score, TimeSlider, ToggleArea, HeadTip, Navbar, Area},
-  data() {
 
+export default {
+  components: {TimeSlider, ToggleArea, HeadTip, Navbar, Area},
+  data() {
     return {
       selectedDate: '', // 选择的日期
       selectedTime: '', // 选择的场次
@@ -74,10 +77,6 @@ export default {
         }
       }
     };
-  },
-  components: {
-    ToggleArea, // 在components中声明ToggleArea组件
-    Area
   },
   methods: {
     async viewSeats() {
@@ -143,6 +142,7 @@ export default {
     changeArea(index) {
       this.getSeatRows()
     },
+
   },
   created() {
     request.get('/public/getArea').then(res => {
@@ -150,7 +150,8 @@ export default {
       this.getSeatRows()
     })
     this.togglePage()
-  }
+  },
+
 }
 </script>
 
@@ -178,4 +179,6 @@ export default {
   width: 50%; /* 调整为 50% */
   margin-bottom: 20px; /* 添加一些底部间距 */
 }
+
+
 </style>
