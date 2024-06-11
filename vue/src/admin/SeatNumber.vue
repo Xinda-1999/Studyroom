@@ -6,8 +6,16 @@
         <HeadTip></HeadTip>
       </div>
       <Area ref="room" v-if="seatRows" :seat-rows="seatRows" @seatClick="seatClick">
+        
         <div slot="seatMenu" class="blankMenu">
-          <div>{{ $t("check_in_code") }}：{{ number }}</div>
+        <div>{{ $t("check_in_code") }}:{{ number }}</div>
+        <div @click="showQR">
+        <i></i>查看二维码
+        </div>
+        <!-- add '添加插座' 按钮 -->
+        <div @click="showhistory">
+        <i></i>查看预约历史
+        </div>
         </div>
       </Area>
     </el-card>
@@ -37,6 +45,12 @@ export default {
   },
   methods: {
     seatClick(index) {
+      //
+    },
+    showhistory() {
+      this.$router.push('/admin/seat/history');
+    },
+    showQR() {
       // 生成座位二维码，无论座位状态如何
       this.createQrCode(this.seatRows[index].sid);
 
