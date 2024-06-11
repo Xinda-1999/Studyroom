@@ -31,12 +31,6 @@
           <div>{{ scope.row.username }}</div>
         </template>
       </el-table-column>
-      <!-- <el-table-column
-          label="信用分">
-        <template slot-scope="scope">
-          <div>{{ scope.row.score }}</div>
-        </template>
-      </el-table-column> -->
       <el-table-column
           label="重置密码">
         <template slot-scope="scope">

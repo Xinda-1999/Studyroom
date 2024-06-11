@@ -3,7 +3,6 @@ import VueRouter from 'vue-router'
 
 Vue.use(VueRouter)
 
-
 const routes = [
     {
         path: '/login',
@@ -76,27 +75,12 @@ const routes = [
             },
             {
                 path: 'seatre',
-                component: () => import('../user/Seatre'), // 导入你的新页面组件
-                children: [
-                    {
-                        path: '/SeatRestp2',
-                        name: 'SeatRestp2',
-                        component: () => import('../user/Seatre_stp2') // 更新为实际路径
-                      }
-                                       
-                ]
+                component: () => import('../user/Seatre')
             }
 
         ]
     }
-    ,
-    {
-        path: '/student/history',
-        component: () => import('../user/History')
-    }, {
-        path: '/student/record',
-        component: () => import('../user/Record')
-    }, {
+    , {
         path: '/ScoreMess',
         component: () => import('../user/ScoreMess')
     }, {

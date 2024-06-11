@@ -13,10 +13,10 @@
           <!-- 添加一个日期选择器 -->
           <el-date-picker v-model="selectedDate" type="date" placeholder="选择日期" :picker-options="pickerOptions"></el-date-picker>
           <!-- 添加一个场次选择器 -->
-          <el-select v-model="selectedTime" placeholder="选择场次" @change="setTimeRange">
-            <el-option label="上午(9-12)" value="morning"></el-option>
-            <el-option label="下午(13-17)" value="afternoon"></el-option>
-            <el-option label="晚上(18-21)" value="evening"></el-option>
+          <el-select v-model="selectedTime" placeholder="选择场次">
+            <el-option label="上午" value="morning"></el-option>
+            <el-option label="下午" value="afternoon"></el-option>
+            <el-option label="晚上" value="evening"></el-option>
           </el-select>
           <!-- 添加一个查看座位按钮 -->
           <el-button type="primary" @click="viewSeats">查看座位</el-button>
@@ -25,10 +25,9 @@
     </div>
 
     <navbar title="预约座位" :left="false">
-      <!-- <Score slot="right"></Score>-->
+      <Score slot="right"></Score>
     </navbar>
-
-    <el-card v-if="showReservation" style="overflow: scroll;">
+    <el-card style="overflow: scroll;">
       <div slot="header" class="clearfix">
         <ToggleArea @changeArea="getSeatRows" ref="toggleArea" :area-rows="areaRows" v-if="areaRows"></ToggleArea>
         <HeadTip></HeadTip>
@@ -40,15 +39,12 @@
           </div>
         </div>
       </Area>
-    </el-card>
 
-    <el-card v-if="showReservation">
-      <van-cell title="座位" :value="seatName"/>
+      <!-- 在这里添加一个预约按钮 -->
+      <div style="text-align: center; margin-top: 20px;">
+        <el-button type="primary" @click="submit">预约</el-button>
+      </div>
     </el-card>
-
-    <div v-if="showReservation" style="text-align: center; margin-top: 20px;">
-      <el-button type="primary" @click="submit">预约</el-button>
-    </div>
   </div>
 </template>
 
@@ -58,17 +54,16 @@ import Navbar from "@/components/navbar";
 import request from "@/req";
 import HeadTip from "@/components/HeadTip";
 import ToggleArea from "@/components/ToggleArea";
-import { Toast } from "vant";
-//import Score from "@/components/Score";
+import TimeSlider from "@/components/TimeSlider";
+import {Toast} from "vant";
+import Score from "@/components/Score";
 
 export default {
-  components: { ToggleArea, HeadTip, Navbar, Area },
+  components: {TimeSlider, ToggleArea, HeadTip, Navbar, Area},
   data() {
     return {
       selectedDate: '', // 选择的日期
       selectedTime: '', // 选择的场次
-      startTime: '', // 开始时间
-      endTime: '', // 结束时间
       areaRows: null, // 区域信息
       seatRows: null, // 座位信息，根据日期和场次获取
       seatCurIndex: 0,
@@ -79,23 +74,10 @@ export default {
           const weekLater = new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000);
           return time.getTime() < now.getTime() || time.getTime() > weekLater.getTime();
         }
-      },
-      showReservation: false // 控制预约信息显示
+      }
     };
   },
   methods: {
-    setTimeRange() {
-      if (this.selectedTime === 'morning') {
-        this.startTime = '09:00';
-        this.endTime = '12:00';
-      } else if (this.selectedTime === 'afternoon') {
-        this.startTime = '13:00';
-        this.endTime = '17:00';
-      } else if (this.selectedTime === 'evening') {
-        this.startTime = '18:00';
-        this.endTime = '21:00';
-      }
-    },
     async viewSeats() {
       if (!this.selectedDate || !this.selectedTime) {
         Toast.fail('请选择日期和场次');
@@ -105,7 +87,6 @@ export default {
         const response = await fetch(`/api/seats?date=${this.selectedDate}&time=${this.selectedTime}`);
         const data = await response.json();
         this.seatRows = data.seats;
-        this.showReservation = true; // 成功获取座位信息后显示预约信息
       } catch (error) {
         console.error('获取座位信息失败：', error);
       }
@@ -120,18 +101,11 @@ export default {
         return;
       }
       this.$nextTick(() => {
-        const startDateTime = new Date(`${this.selectedDate}T${this.startTime}:00`).getTime();
-        const endDateTime = new Date(`${this.selectedDate}T${this.endTime}:00`).getTime();
-
         const body = {
-          startTime: startDateTime,
-          endTime: endDateTime,
+          startTime: this.selectedDate + ' ' + this.selectedTime,
           uid: this.$getUser().uid,
           sid: this.seatRows[this.seatCurIndex].sid
-          //rid: someRidValue // 确保传递的 rid 值是正确的
         };
-        console.log(body); // 打印日志查看传递参数
-
         request.post('/user/addReservation', body).then(res => {
           if (res.code === 200) {
             Toast.success('预约成功');
@@ -142,7 +116,6 @@ export default {
         });
       });
     },
-
     togglePage() {
       request.post('/user/getReservationByUid', {
         uid: this.$getUser().uid
@@ -171,7 +144,7 @@ export default {
       this.$nextTick(() => {
         const area = this.$refs.toggleArea.getArea();
         this.seatName = area.subName +
-          this.seatRows[this.seatCurIndex].row + this.seatRows[this.seatCurIndex].column;
+            this.seatRows[this.seatCurIndex].row + this.seatRows[this.seatCurIndex].column;
       });
     },
     getSeatRows() {

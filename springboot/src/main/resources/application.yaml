@@ -4,8 +4,8 @@ spring:
     default-property-inclusion: non_null
   datasource:
     username: root
-    password:  9RjR1404
-    driver-class-name: com.mysql.cj.jdbc.Driver
+    password:  lsy270264
+    driver-clas-name: com.mysql.cj.jdbc.Driver
     url: jdbc:mysql://localhost:3306/seatreservation?serverTimezone=GMT%2B8&characterEncoding=utf-8&useSSL=false&allowPublicKeyRetrieval=true
 
 

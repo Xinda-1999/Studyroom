@@ -40,24 +40,28 @@ public class UserController {
      */
     @PostMapping("/addReservation")
     public Map<String, Object> addReservation(@RequestBody Map<String, Object> map) {
-
+        System.out.println("222");
         List<Map<String, Object>> curReservation = userMapper.getCurReservation(map.get("uid"));
         //当前用户已有预约
+        System.out.println("111");
+        System.out.println(curReservation.size());
         if (curReservation.size() > 0) {
+            System.out.println("已有预约，无法继续预约");
             return new R().bad().builder();
         }
         long startTime = ((long) map.get("startTime"));
         long endTime = ((long) map.get("endTime"));
-
+    
         String finishTaskName = ReservationCode.FINISH
                 + "-" + map.get("sid");
         String unSignedTaskName = ReservationCode.UNSIGNED
                 + "-" + map.get("sid");
         //插入预约记录
+        System.out.println("插入预约记录: " + map);
         userMapper.addReservation(map);
         userMapper.updateSeat(SeatCode.BE_RESERVATION, map.get("sid"));
         int rid = Integer.parseInt(map.get("rid").toString());
-
+    
         //预约开始超过30分钟将设置预约状态为违约未签到，
         //并释放座椅
         dynamicTask.add(new MyTask(unSignedTaskName,
@@ -66,15 +70,16 @@ public class UserController {
             userMapper.updateReservation(ReservationCode.UNSIGNED, rid);
             userMapper.updateSeat(SeatCode.CAN_USE, map.get("sid"));
         }));
-
+    
         //预约结束时自动恢复座位状态
         dynamicTask.add(new MyTask(finishTaskName, endTime, () -> {
             userMapper.updateReservation(ReservationCode.FINISH, rid);
             userMapper.updateSeat(SeatCode.CAN_USE, map.get("sid"));
         }));
-
+    
         return new R().ok().builder();
     }
+    
 
 
     /**
@@ -89,6 +94,11 @@ public class UserController {
         long number = new Long(map.get("number").toString());
         //获取预约记录
         Map<String, Object> reservation = userMapper.getReservationByRid(map.get("rid"));
+        // 打印调试信息
+        System.out.println("用户输入的验证码: " + number);
+        System.out.println("预约记录: " + reservation);
+        System.out.println("系统内"+SignedNumber.getSignedNumber(reservation));
+
 
         long currentTimeMillis = System.currentTimeMillis();
         Object state = reservation.get("state");

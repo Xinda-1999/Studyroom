@@ -7,14 +7,11 @@
       </div>
       <Area ref="room" v-if="seatRows" :seat-rows="seatRows" @seatClick="seatClick">
         <div slot="seatMenu" class="blankMenu">
-          <div>{{ $t("check_in_code") }}：{{ number }}</div>
+          <div>{{ $t("check_in_code") }}: {{ number }}</div>
         </div>
       </Area>
     </el-card>
-    <div class="qrcode" ref="qrCodeUrl"></div>
-    <div v-if="number === '000000'" class="checkin-info">
-      {{ $t("check_in_code_message") }}
-    </div>
+    <div class="qrcode" v-if="showQrCode" ref="qrCodeUrl"></div>
   </div>
 </template>
 
@@ -33,6 +30,8 @@ export default {
       areaRows: null,
       seatRows: null,
       number: '000000',
+      showQrCode: false, // 控制二维码显示的标志位
+      currentSeatState: 0, // 当前座位的状态
     };
   },
   methods: {
@@ -50,6 +49,8 @@ export default {
       } else {
         this.number = '000000'; // 非使用中的座位重置签到码
       }
+      this.currentSeatState = this.seatRows[index].state;
+      this.showQrCode = true; // 点击座位后显示二维码
     },
     getSeatRows() {
       this.$nextTick(() => {
@@ -63,7 +64,7 @@ export default {
     createQrCode(seatNumber) {
       this.$refs.qrCodeUrl.innerHTML = ""; // 清除之前的二维码
       new QRCode(this.$refs.qrCodeUrl, {
-        text: `${seatNumber}`, // 需要转换为二维码的内容，座位号
+        text: `https://blog.csdn.net/weixin_42601136?seatId=${seatNumber}`, // 需要转换为二维码的内容，座位号
         width: 100,
         height: 100,
         colorDark: "#000000",
@@ -92,13 +93,8 @@ export default {
   display: inline-block;
   width: 132px;
   height: 132px;
-  background-color: transparent;
+  background-color: #fff;
   padding: 6px;
   box-sizing: border-box;
-}
-.checkin-info {
-  margin-top: 20px;
-  font-size: 14px;
-  color: #999;
 }
 </style>

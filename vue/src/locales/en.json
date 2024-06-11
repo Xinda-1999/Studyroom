@@ -1,0 +1,26 @@
+{
+    "seat_management": "Seat Management",
+    "personal_center": "Personal Center",
+    "student_management": "Student Management",
+    "seat_reservation_record": "Seat Reservation Record",
+    "check_in_code": "Check-in Code",
+    "available": "Available",
+    "in_use": "In Use",
+    "reserved": "Reserved",
+    "table": "Table",
+    "first_floor_west_reading_area": "First Floor West Reading Area",
+    "first_floor_east_reading_area": "First Floor East Reading Area",
+    "second_floor_west_study_area": "Second Floor West Study Area",
+    "second_floor_east_study_area": "Second Floor East Study Area",
+    "third_floor_west_study_area": "Third Floor West Study Area",
+    "third_floor_east_study_area": "Third Floor East Study Area",
+    "add_seat": "Add Seat",
+    "add_table": "Add Table",
+    "add_power": "Add Power",
+    "remove": "Remove",
+    "check_in_code_message": "Check-in code 000000 indicates that the seat is not currently in a check-in status."
+
+
+  
+  }
+  

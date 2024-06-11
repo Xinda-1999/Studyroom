@@ -1,0 +1,24 @@
+{
+    "seat_management": "座位管理",
+    "personal_center": "个人中心",
+    "student_management": "学生管理",
+    "seat_reservation_record": "座位预约记录",
+    "check_in_code": "签到码",
+    "available": "可选",
+    "in_use": "使用中",
+    "reserved": "有约",
+    "table": "桌子",
+    "first_floor_west_reading_area": "一层西阅览区",
+    "first_floor_east_reading_area": "一层东阅览区",
+    "second_floor_west_study_area": "二层西自习区",
+    "second_floor_east_study_area": "二层东自习区",
+    "third_floor_west_study_area": "三层西自习区",
+    "third_floor_east_study_area": "三层东自习区",
+    "add_seat": "添加插座",
+    "add_table": "添加桌子",
+    "add_power": "添加插座",
+    "remove": "删除",
+    "check_in_code_message": "签到码为 000000 表示该座位目前并不处于待签到状态。"
+    
+  }
+  
