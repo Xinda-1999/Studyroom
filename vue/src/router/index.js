@@ -32,6 +32,10 @@ const routes = [
                     {
                         path: "crud",
                         component: () => import('../admin/SeatCrud')
+                    },
+                    {
+                        path: "history",
+                        component: () => import('../admin/SeatHistory')
                     }
                 ]
             }, {
