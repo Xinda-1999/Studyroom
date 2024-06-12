@@ -11,6 +11,10 @@
         </div>
       </LeftLayout>
     </div>
+    <div class="language-switcher">
+      <button @click="switchLanguage('en')">English</button>
+      <button @click="switchLanguage('zh')">中文</button>
+    </div>
     <router-view class="background3"></router-view>
   </div>
 </template>
@@ -39,6 +43,9 @@ export default {
         }
       }
       return 0;
+    },
+    switchLanguage(lang) {
+      this.$i18n.locale = lang;
     }
   },
   created() {
@@ -83,5 +90,15 @@ export default {
   margin-left: 15vw;
   padding: 20px;
   overflow: auto;
+}
+.language-switcher {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  z-index: 1000;
+}
+
+.language-switcher button {
+  margin: 5px;
 }
 </style>

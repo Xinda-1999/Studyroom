@@ -46,6 +46,25 @@ export default {
   methods: {
     seatClick(index) {
       //
+      // 生成座位二维码，无论座位状态如何
+      this.createQrCode(this.seatRows[index].sid);
+
+      // 只有正在使用的座位才请求签到码
+      if (this.seatRows[index].state === 1) {
+        request.post('/public/getSignedNumber', {
+          sid: this.seatRows[index].sid
+        }).then(res => {
+          this.number = res.number;
+          //添加
+          const updatedCheckInCodeText = `${this.$t("check_in_code")}：${this.number}`;
+          this.createQrCode(updatedCheckInCodeText);
+        });
+      } else {
+        this.number = '000000'; // 非使用中的座位重置签到码
+        //
+        const updatedCheckInCodeText = `${this.$t("check_in_code")}：${this.number}`;
+        this.createQrCode(updatedCheckInCodeText);
+      }
     },
     showhistory() {
       this.$router.push('/admin/seat/history');

@@ -55,11 +55,7 @@ public class AdminController {
         return new R().ok().builder();
     }
 
-    @PostMapping("/updatePwd")
-    public Map<String, Object> updatePwd(@RequestBody Map<String, Object> map) {
-        adminMapper.updatePassword(map);
-        return new R().ok().builder();
-    }
+
 
     @GetMapping("/getUser")
     public Map<String, Object> getUser() {
@@ -72,6 +68,36 @@ public class AdminController {
         List<Map<String, Object>> list = adminMapper.getTeacher();
         return new R().ok().add("rows", list).builder();
     }
+        // ------------------------------ 新添加部分 ------------------------------ //
+    // 修改密码
+    @PostMapping("/updatePwd")
+    public Map<String, Object> updatePwd(@RequestBody Map<String, Object> map) {
+        // 验证性输出
+        // System.out.println("Modified map: " + map);
+        adminMapper.updatePassword(map);
+        return new R().ok().builder();
+    }
+    // 修改用户名
+    @PostMapping("/updateUsername")
+    public Map<String, Object> updateUsername(@RequestBody Map<String, Object> map) {
+        // 验证性输出
+        // System.out.println("Modified map: " + map);
+        adminMapper.updateUsername(map);
+        return new R().ok().builder();
+    }
+
+    // 个人主页的信息获得:从数据库读取个人信息显示在个人主页上, 类似getUser
+    @PostMapping({"/getUser", "/announce"})
+    public Map<String, Object> getUser(@RequestBody Map<String, Object> map) {
+        // 验证性输出
+        // System.out.println("Modified map: " + map);
+        List<Map<String, Object>> list = adminMapper.getUserInfo(map);
+        // 验证性输出
+        // System.out.println("查询结果: " + list);
+        return new R().ok().add("rows", list).builder();    // 返回包含着user的list做value的Map
+    }
+    
+    // ------------------------------ 新添加部分结束 ------------------------------ //
 
     @GetMapping("/getStatistics")
     public Map<String, Object> getStatistics() {

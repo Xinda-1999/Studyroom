@@ -32,7 +32,8 @@ const routes = [
                     {
                         path: "crud",
                         component: () => import('../admin/SeatCrud')
-                    },
+                    }
+                    ,
                     {
                         path: "history",
                         component: () => import('../admin/SeatHistory')
@@ -83,11 +84,12 @@ const routes = [
                 component: () => import('../user/Seatre'), // 导入你的新页面组件
                 children: [
                     {
-                        path: '/SeatRestp2',
-                        name: 'SeatRestp2',
-                        component: () => import('../user/Seatre_stp2') // 更新为实际路径
-                      }
-                                       
+                        path: 'toSigned',
+                        component: () => import('../user/ToSigned')
+                    }, {
+                        path: 'beUse',
+                        component: () => import('../user/BeUse')
+                    }
                 ]
             }
 

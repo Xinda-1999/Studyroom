@@ -115,20 +115,22 @@ export default {
 </script>
 
 <style scoped>
-.room {
-  display: grid;
-  /*background: #e4e4e4;*/
-  grid-template-rows: repeat(9, 32px);
-  grid-template-columns: repeat(25, 32px);
-  justify-content: center;
-}
+  .room {
+    display: grid;
+    /*background: #e4e4e4;*/
+    grid-template-rows: repeat(9, 32px);
+    grid-template-columns: repeat(25, 32px);
+    /*justify-content: center;*/
+    justify-content: left;
+  }
 
-.item {
+  .item {
   width: 32px;
   height: 32px;
   .seat {
-  /*background-color: #ffffff;*/
+  background-color: #ffffff;
   }
-}
+  }
+
 
 </style>

@@ -13,8 +13,14 @@
       <TimeSlider :disable="true" :start-time="item.startTime" :end-time="item.endTime"></TimeSlider>
 
     </el-card>
-    <div class="btn" style="background: #67c23a" @click="submit">暂离</div>
-
+    <el-form>
+      <el-form-item label=" " style="text-align: center; margin-bottom: 10px;">
+        <el-button type="primary" @click="submit" style="width: 900px;">正在使用中</el-button>
+      </el-form-item>
+    </el-form>
+    <div class="btn-container">
+      <div class="btn1" @click="cancelReservation">签退</div>
+    </div>
   </div>
 </template>
 
@@ -50,8 +56,26 @@ export default {
         Toast.success('操作成功，请回馆后及时签到')
         this.$router.replace('/student/seat/toSigned')
       })
+    },
+    cancelReservation() {
+      request.post('/user/cancelReservation', {
+        rid: this.item.rid
+      }).then(res => {
+        if (res.code === 200) {
+          Toast.success('签退成功');
+          this.$router.replace('/student/seat/reservation');
+        } else {
+          Toast.fail('取消预约失败');
+        }
+        console.log('取消预约失败:', res.code);
+      }).catch(error => {
+        console.error('取消预约请求失败:', error);
+        Toast.fail('取消预约失败');
+      });
     }
+  
   },
+  
   created() {
     this.item = JSON.parse(localStorage.getItem('reservation'));
     console.log(this.item)
@@ -59,6 +83,31 @@ export default {
 }
 </script>
 
-<style scoped>
 
+<style scoped>
+.btn-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 10px; /* 调整这个值来控制与签到按钮的间距 */
+}
+
+.btn, .btn1 {
+  width: 70%;
+  margin: 10px 0;
+  padding: 10px;
+  text-align: center;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.btn {
+  background-color: #409EFF;
+  color: white;
+}
+
+.btn1 {
+  background-color: #F56C6C;
+  color: white;
+}
 </style>

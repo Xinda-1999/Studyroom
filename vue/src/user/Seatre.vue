@@ -1,7 +1,7 @@
 <template>
   <div class="root">
     <!-- 标题 -->
-    <div class="title">图书馆预约</div>
+    <div class="title">{{ $t('libraryReservation') }}</div>
     <!-- 右侧布局，包含一张图片 -->
     <div class="right-content">
       <img src="../assets/library.png" alt="图书馆图片" style="width: 70%;">
@@ -11,20 +11,20 @@
       <el-card style="margin-top: 20px; position: relative">
         <div slot="header" class="clearfix" style="text-align: center;">
           <!-- 添加一个日期选择器 -->
-          <el-date-picker v-model="selectedDate" type="date" placeholder="选择日期" :picker-options="pickerOptions"></el-date-picker>
+          <el-date-picker v-model="selectedDate" type="date" :placeholder="$t('selectDate')" :picker-options="pickerOptions"></el-date-picker>
           <!-- 添加一个场次选择器 -->
-          <el-select v-model="selectedTime" placeholder="选择场次" @change="setTimeRange">
-            <el-option label="上午(9-12)" value="morning"></el-option>
-            <el-option label="下午(13-17)" value="afternoon"></el-option>
-            <el-option label="晚上(18-21)" value="evening"></el-option>
+          <el-select v-model="selectedTime" :placeholder="$t('selectTimeSlot')" @change="setTimeRange">
+            <el-option :label="$t('morning')" value="morning"></el-option>
+            <el-option :label="$t('afternoon')" value="afternoon"></el-option>
+            <el-option :label="$t('evening')" value="evening"></el-option>
           </el-select>
           <!-- 添加一个查看座位按钮 -->
-          <el-button type="primary" @click="viewSeats">查看座位</el-button>
+          <el-button type="primary" @click="viewSeats">{{ $t('viewSeats') }}</el-button>
         </div>
       </el-card>
     </div>
 
-    <navbar title="预约座位" :left="false">
+    <navbar :title="$t('reserveSeat')" :left="false">
       <!-- <Score slot="right"></Score>-->
     </navbar>
 
@@ -36,18 +36,18 @@
       <Area ref="room" v-if="seatRows" :seat-rows="seatRows" @seatClick="seatClick">
         <div slot="seatMenu" class="blankMenu">
           <div @click="clickPop">
-            <i class="el-icon-s-flag"></i>预约
+            <i class="el-icon-s-flag"></i>{{ $t('reserve') }}
           </div>
         </div>
       </Area>
     </el-card>
 
-    <el-card v-if="showReservation">
-      <van-cell title="座位" :value="seatName"/>
+    <el-card v-if="showReservation" style="width: 500px;">
+      <van-cell :title="$t('seat')" :value="seatName"/>
     </el-card>
 
     <div v-if="showReservation" style="text-align: center; margin-top: 20px;">
-      <el-button type="primary" @click="submit">预约</el-button>
+      <el-button type="primary" @click="submit">{{ $t('reserve') }}</el-button>
     </div>
   </div>
 </template>
@@ -72,7 +72,7 @@ export default {
       areaRows: null, // 区域信息
       seatRows: null, // 座位信息，根据日期和场次获取
       seatCurIndex: 0,
-      seatName: '请选择座位', // 当前选择的座位
+      seatName: this.$t('selectSeat'), // 当前选择的座位
       pickerOptions: {
         disabledDate: time => {
           const now = new Date();
@@ -95,10 +95,12 @@ export default {
         this.startTime = '18:00';
         this.endTime = '21:00';
       }
+      console.log(this.$t('time') + ':', this.startTime, this.endTime);
     },
+    
     async viewSeats() {
       if (!this.selectedDate || !this.selectedTime) {
-        Toast.fail('请选择日期和场次');
+        Toast.fail(this.$t('selectDateTime'));
         return;
       }
       try {
@@ -107,66 +109,95 @@ export default {
         this.seatRows = data.seats;
         this.showReservation = true; // 成功获取座位信息后显示预约信息
       } catch (error) {
-        console.error('获取座位信息失败：', error);
+        console.error(this.$t('fetchSeatsFailed') + ':', error);
       }
     },
     submit() {
-      if (this.seatName === '请选择座位') {
-        Toast.fail('请选择座位');
+      console.log(this.$t('reserveButtonClicked')); // 添加日志
+      if (this.seatName === this.$t('selectSeat')) {
+        Toast.fail(this.$t('selectSeat'));
         return;
       }
       if (new Date().getHours() >= 22) {
-        Toast.fail('22点之后无法预约');
+        Toast.fail(this.$t('cannotReserveAfter22'));
         return;
       }
       this.$nextTick(() => {
-        const startDateTime = new Date(`${this.selectedDate}T${this.startTime}:00`).getTime();
-        const endDateTime = new Date(`${this.selectedDate}T${this.endTime}:00`).getTime();
+        if (!this.startTime || !this.endTime) {
+          Toast.fail(this.$t('selectTimeSlot'));
+          return;
+        }
+        if (!this.selectedDate) {
+          Toast.fail(this.$t('selectDate'));
+          return;
+        }
+
+        const formattedDate = this.selectedDate.toISOString().split('T')[0];
+        console.log('formattedDate:', formattedDate);
+
+        const startDateTime = new Date(`${formattedDate}T${this.startTime}:00`).getTime();
+        const endDateTime = new Date(`${formattedDate}T${this.endTime}:00`).getTime();
+        console.log('最终时间:', startDateTime, endDateTime);
+
+        if (isNaN(startDateTime) || isNaN(endDateTime)) {
+          Toast.fail(this.$t('timeFormatError'));
+          return;
+        }
 
         const body = {
           startTime: startDateTime,
           endTime: endDateTime,
           uid: this.$getUser().uid,
           sid: this.seatRows[this.seatCurIndex].sid
-          //rid: someRidValue // 确保传递的 rid 值是正确的
         };
-        console.log(body); // 打印日志查看传递参数
+        console.log(this.$t('submitData') + ':', body); // 添加日志
 
-        request.post('/user/addReservation', body).then(res => {
+        request.post('/user/addSimpleReservation', body).then(res => {
+          console.log(this.$t('apiResponse') + ':', res); // 添加日志
           if (res.code === 200) {
-            Toast.success('预约成功');
+            Toast.success(this.$t('reservationSuccessful'));
             this.togglePage();
           } else {
-            Toast.fail('预约失败，当前已有预约');
+            Toast.fail(this.$t('reservationFailedExisting'));
           }
+        }).catch(error => {
+          console.error(this.$t('reservationRequestFailed') + ':', error); // 错误处理
         });
       });
     },
-
     togglePage() {
       request.post('/user/getReservationByUid', {
         uid: this.$getUser().uid
       }).then(res => {
+        console.log(this.$t('fetchReservationInfo') + ':', res); // 添加日志
         for (let i = 0; i < res.rows.length; i++) {
           let item = res.rows[i];
+          console.log(this.$t('processingReservation') + ':', item); // 添加日志
           switch (item.state) {
             case 0:
             case 3:
               localStorage.setItem('reservation', JSON.stringify(item));
+              console.log(this.$t('navigateToToSigned')); // 添加日志
               if (this.$route.path !== '/student/seat/toSigned') {
                 this.$router.replace('/student/seat/toSigned');
               }
               break;
             case 1:
               localStorage.setItem('reservation', JSON.stringify(item));
+              console.log(this.$t('navigateToBeUse')); // 添加日志
               if (this.$route.path !== '/student/seat/beUse') {
                 this.$router.replace('/student/seat/beUse');
               }
               break;
+            default:
+              console.log(this.$t('unhandledReservationState') + ':', item.state); // 添加日志
           }
         }
+      }).catch(error => {
+        console.error(this.$t('fetchReservationInfoFailed') + ':', error); // 错误处理
       });
     },
+
     clickPop() {
       this.$nextTick(() => {
         const area = this.$refs.toggleArea.getArea();
@@ -176,14 +207,17 @@ export default {
     },
     getSeatRows() {
       this.$nextTick(() => {
-        if (this.$refs)
-          request.post('/public/getAreaSeats', {
-            area: this.$refs.toggleArea.getArea().aid
-          }).then(res => {
+        if (this.$refs.toggleArea) {
+          const area = this.$refs.toggleArea.getArea();
+          request.post('/public/getAreaSeats', { area: area.aid }).then(res => {
             this.seatRows = res.rows;
+          }).catch(error => {
+            console.error(this.$t('fetchSeatsFailed') + ':', error); // 错误处理
           });
+        }
       });
     },
+
     seatClick(index) {
       if (this.seatRows[index].type === 1 || this.seatRows[index].state === 2 || this.seatRows[index].state === 1) {
         this.seatRows[index].show = false;
@@ -201,7 +235,7 @@ export default {
       this.getSeatRows();
     });
     this.togglePage();
-  },
+  }
 }
 </script>
 

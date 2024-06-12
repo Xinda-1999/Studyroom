@@ -6,8 +6,16 @@
         <HeadTip></HeadTip>
       </div>
       <Area ref="room" v-if="seatRows" :seat-rows="seatRows" @seatClick="seatClick">
+        
         <div slot="seatMenu" class="blankMenu">
-          <div>{{ $t("check_in_code") }}：{{ number }}</div>
+        <div>{{ $t("check_in_code") }}:{{ number }}</div>
+        <div @click="showQR">
+        <i></i>查看二维码
+        </div>
+        <!-- add '添加插座' 按钮 -->
+        <div @click="showhistory">
+        <i></i>查看预约历史
+        </div>
         </div>
       </Area>
     </el-card>
@@ -37,6 +45,12 @@ export default {
   },
   methods: {
     seatClick(index) {
+      //
+    },
+    showhistory() {
+      this.$router.push('/admin/seat/history');
+    },
+    showQR() {
       // 生成座位二维码，无论座位状态如何
       this.createQrCode(this.seatRows[index].sid);
 
@@ -46,15 +60,9 @@ export default {
           sid: this.seatRows[index].sid
         }).then(res => {
           this.number = res.number;
-          //添加
-          const updatedCheckInCodeText = `${this.$t("check_in_code")}：${this.number}`;
-          this.createQrCode(updatedCheckInCodeText);
         });
       } else {
         this.number = '000000'; // 非使用中的座位重置签到码
-        //
-        const updatedCheckInCodeText = `${this.$t("check_in_code")}：${this.number}`;
-        this.createQrCode(updatedCheckInCodeText);
       }
     },
     getSeatRows() {
@@ -66,10 +74,10 @@ export default {
         });
       });
     },
-    createQrCode(content) {
+    createQrCode(seatNumber) {
       this.$refs.qrCodeUrl.innerHTML = ""; // 清除之前的二维码
       new QRCode(this.$refs.qrCodeUrl, {
-        text: `${content}`, // 需要转换为二维码的内容，座位号
+        text: `${seatNumber}`, // 需要转换为二维码的内容，座位号
         width: 100,
         height: 100,
         colorDark: "#000000",

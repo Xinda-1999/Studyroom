@@ -1,9 +1,9 @@
 <template>
   <div>
-    <navbar title="抢座" :left="false">
+    <navbar title="预约座位" :left="false">
       <Score slot="right"></Score>
     </navbar>
-    <el-card style="overflow: scroll;">
+    <el-card  class="bg" style="overflow: scroll;">
       <div slot="header" class="clearfix">
         <ToggleArea @changeArea="getSeatRows" ref="toggleArea" :area-rows="areaRows" v-if="areaRows"></ToggleArea>
         <HeadTip></HeadTip>
@@ -17,12 +17,12 @@
       </Area>
     </el-card>
     <el-card>
-      <van-cell title="座位" :value="seatName"/>
+      <div class="flex-box">
+        <van-cell class="van-cell" title="座位" :value="seatName"/>
+      </div>
       <TimeSlider ref="timeSlider"></TimeSlider>
     </el-card>
-    <div class="btn-container">
-      <el-button type="primary" class="btn" @click="submit">抢座</el-button>
-    </div>
+    <div class="btn" @click="submit">抢座</div>
   </div>
 </template>
 
@@ -39,7 +39,7 @@ import Score from "@/components/Score";
 
 export default {
   name: "Reservation",
-  components: {TimeSlider, ToggleArea, HeadTip, Navbar, Area},
+  components: {Score, TimeSlider, ToggleArea, HeadTip, Navbar, Area},
   data() {
     return {
       areaRows: null,
@@ -87,6 +87,7 @@ export default {
         console.log(res)
         for (let i = 0; i < res.rows.length; i++) {
           let item = res.rows[i]
+          console.log('预约状态:', item.state) // 添加日志
           switch (item.state) {
             case 0:
             case 3:
@@ -145,13 +146,22 @@ export default {
 </script>
 
 <style scoped>
-.btn-container {
-  display: flex;
-  justify-content: center;
-  margin-top: 20px;
-}
-
-.btn {
-  width: 100px;
-}
+  .flex-box {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .van-cell{
+    flex-basis: 30%;
+  }
+  .btn {
+    width: 300px;
+    left: 0;
+    right: 0;
+    margin: 1em auto;
+    bottom: 84px;
+  }
+  .bg {
+    background-image: url("../assets/background.webp")
+  }
 </style>

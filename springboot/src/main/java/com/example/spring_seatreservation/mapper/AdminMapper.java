@@ -33,12 +33,20 @@ public interface AdminMapper {
 
     @Select("select * from user where type=0")
     List<Map<String, Object>> getUser();
+    @Select("select * from user where number=${number}")
+    List<Map<String, Object>> getUserInfo(Map<String, Object> map);
 
     @Select("select * from user where type=1")
     List<Map<String, Object>> getTeacher();
 
-    @Update("update user set password =#{password} where uid=${uid}")
-    void updatePassword(Map<String, Object> map);
+ //   @Update("update user set password =#{password} where uid=${uid}")
+ //   void updatePassword(Map<String, Object> map);
+    
+     @Update("update user set password =#{password} where number=${number}")
+     void updatePassword(Map<String, Object> map);
+
+     @Update("update user set username =#{username} where number=${number}")
+     void updateUsername(Map<String, Object> map);
 
     @Select("SELECT `startTime`,`endTime` FROM reservation  WHERE state=-1 ORDER BY startTime")
     List<Map<String, Object>> getStatistics();

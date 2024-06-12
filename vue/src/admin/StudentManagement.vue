@@ -1,60 +1,59 @@
 <template>
   <div>
     <el-form style="padding: 1em" :inline="true" class="demo-form-inline">
-      <el-form-item label="学工号">
-        <el-input v-model="number" placeholder="学工号"></el-input>
+      <el-form-item :label="$t('studentId')">
+        <el-input v-model="number" :placeholder="$t('studentId')"></el-input>
       </el-form-item>
-      <el-form-item label="用户名">
-        <el-input v-model="username" placeholder="用户名"></el-input>
+      <el-form-item :label="$t('username')">
+        <el-input v-model="username" :placeholder="$t('username')"></el-input>
       </el-form-item>
-      <el-form-item label="密码">
-        <el-input v-model="password" placeholder="密码"></el-input>
+      <el-form-item :label="$t('password')">
+        <el-input v-model="password" :placeholder="$t('password')"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="add">添加</el-button>
+        <el-button type="primary" @click="add">{{ $t('add') }}</el-button>
       </el-form-item>
     </el-form>
     <el-table
         :data="rows" :row-style="{height: '40px'}"
         class="background">
       <el-table-column
-          label="学号"
+          :label="$t('studentId')"
           width="180">
         <template slot-scope="scope">
           <div>{{ scope.row.number }}</div>
         </template>
       </el-table-column>
       <el-table-column
-          label="姓名"
+          :label="$t('username')"
           width="180">
         <template slot-scope="scope">
           <div>{{ scope.row.username }}</div>
         </template>
       </el-table-column>
       <el-table-column
-          label="重置密码">
+          :label="$t('resetPassword')">
         <template slot-scope="scope">
           <div style="display: flex;align-items: center">
             <input :id="'input'+scope.$index" type="text"></input>
             <el-button
                 size="mini"
-                @click="remarkPwd(scope.$index, scope.row)">重置
+                @click="remarkPwd(scope.$index, scope.row)">{{ $t('reset') }}
             </el-button>
           </div>
-
         </template>
       </el-table-column>
       <el-table-column
-          label="操作">
+          :label="$t('actions')">
+        <template slot-scope="scope">
           <el-button
               size="mini"
-              @click="">删除
+              @click="deleteUser(scope.row)">{{ $t('delete') }}
           </el-button>
+        </template>
       </el-table-column>
-
     </el-table>
   </div>
-
 </template>
 
 <script>
@@ -79,7 +78,7 @@ export default {
         type: 0
       }).then(res => {
         this.$message({
-          message: '添加成功',
+          message: this.$t('addSuccess'),
           type: 'success'
         });
         this.number = ''
@@ -98,7 +97,7 @@ export default {
         }).then(res => {
           input.value = ''
           this.$message({
-            message: '修改成功',
+            message: this.$t('updateSuccess'),
             type: 'success'
           });
         })
@@ -110,6 +109,29 @@ export default {
         console.log(res);
         this.rows = res.rows
       })
+    },
+    deleteUser(row) {
+      // 假设你有一个删除用户的接口
+      request.post('/admin/deleteUser', { uid: row.uid }).then(res => {
+        if (res.code === 200) {
+          this.$message({
+            message: this.$t('deleteSuccess'),
+            type: 'success'
+          });
+          this.update();
+        } else {
+          this.$message({
+            message: this.$t('deleteFailed'),
+            type: 'error'
+          });
+        }
+      }).catch(error => {
+        console.error('删除请求失败:', error);
+        this.$message({
+          message: this.$t('deleteFailed'),
+          type: 'error'
+        });
+      });
     }
   },
   created() {

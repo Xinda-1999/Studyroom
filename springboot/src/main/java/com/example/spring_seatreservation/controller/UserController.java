@@ -81,7 +81,65 @@ public class UserController {
     }
     
 
+    /**
+     * startTime,endTime,sid,rid,uid
+     *
+     * @param map
+     */
+    // 定义一个新的接口 "/addSimpleReservation"
+    @PostMapping("/addSimpleReservation")
+    public Map<String, Object> addSimpleReservation(@RequestBody Map<String, Object> map) {
+        System.out.println("处理简单预约请求");
+        
+        // 获取当前用户的预约
+        List<Map<String, Object>> curReservation = userMapper.getCurReservation(map.get("uid"));
+        
+        // 当前用户已有预约，返回错误信息
+        if (curReservation.size() > 0) {
+            System.out.println("已有预约，无法继续预约");
+            return new R().bad().builder();
+        }
+        
+        // 获取预约的开始和结束时间
+        long startTime = ((long) map.get("startTime"));
+        long endTime = ((long) map.get("endTime"));
 
+        // 插入预约记录
+        System.out.println("插入预约记录: " + map);
+        userMapper.addReservation(map);
+        userMapper.updateSeat(SeatCode.BE_RESERVATION, map.get("sid"));
+        
+        // 获取预约记录的 ID
+        int rid = Integer.parseInt(map.get("rid").toString());
+        
+        // 设置预约状态为 0
+        userMapper.updateReservationState(rid, 0);
+
+        return new R().ok().builder();
+    }
+
+    /**
+     * startTime,endTime,sid,rid,uid
+     *
+     * @param map
+     */
+    @PostMapping("/cancelReservation")
+    public Map<String, Object> cancelReservation(@RequestBody Map<String, Object> map) {
+        System.out.println("取消预约请求: " + map);
+
+        int rid = Integer.parseInt(map.get("rid").toString());
+
+        // 更新预约状态为 -1
+        userMapper.updateReservationState(rid, -1);
+
+        // 更新座位状态为可用
+        Map<String, Object> reservation = userMapper.getReservationByRid(rid);
+        if (reservation != null) {
+            userMapper.updateSeat(SeatCode.CAN_USE, reservation.get("sid"));
+        }
+
+        return new R().ok().builder();
+    }
     /**
      * 通过rid签到
      * 预约开始的时间前后半小时内有效(暂离1小时内有效)

@@ -23,7 +23,7 @@ body::-webkit-scrollbar {
 }
 
 .seat, .seatSelect {
-  border: 1px solid #e8e8e8;
+//border: 1px solid #e8e8e8;
   width: 28px;
   box-sizing: border-box;
   height: 28px;
@@ -89,6 +89,7 @@ body::-webkit-scrollbar {
   margin: 4px;
   height: 18px;
   border-radius: 2px;
-  background: tan;
+//background: tan;
+  background: #e8e8e8;
 }
 </style>

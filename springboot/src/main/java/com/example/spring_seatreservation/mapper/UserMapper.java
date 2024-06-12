@@ -2,6 +2,7 @@ package com.example.spring_seatreservation.mapper;
 
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Options;
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
 
@@ -33,6 +34,11 @@ public interface UserMapper {
 
     @Update("update reservation set state=${state} where rid=${rid}")
     void updateReservation(Object state, Object rid);
+
+    // 更新预约状态的方法
+    @Update("UPDATE reservation SET state = #{state} WHERE rid = #{rid}")
+    void updateReservationState(@Param("rid") int rid, @Param("state") int state);
+
 
     @Select("select * from reservation where rid=${rid}")
     Map<String, Object> getReservationByRid(Object rid);

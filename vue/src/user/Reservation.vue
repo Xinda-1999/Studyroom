@@ -1,6 +1,6 @@
 <template>
   <div>
-    <navbar title="预约座位" :left="false">
+    <navbar title="抢座" :left="false">
       <Score slot="right"></Score>
     </navbar>
     <el-card  class="bg" style="overflow: scroll;">
@@ -21,8 +21,9 @@
         <van-cell class="van-cell" title="座位" :value="seatName"/>
       </div>
       <TimeSlider ref="timeSlider"></TimeSlider>
+      <div class="btn" @click="submit">抢座</div>
     </el-card>
-    <div class="btn" @click="submit">抢座</div>
+
   </div>
 </template>
 
@@ -145,22 +146,23 @@ export default {
 </script>
 
 <style scoped>
-  .flex-box {
-    display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
-  }
-  .van-cell{
-    flex-basis: 30%;
-  }
-  .btn {
-    width: 300px;
-    left: 0;
-    right: 0;
-    margin: 1em auto;
-    bottom: 84px;
-  }
-  .bg {
-    background-image: url("../assets/background.webp")
-  }
+.flex-box {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.van-cell{
+  flex-basis: 30%;
+}
+.btn {
+  width: 300px;
+  left: 15vw;
+  right: 0;
+  margin: 1em auto;
+  bottom: 84px;
+}
+.bg {
+  background-image: url("../assets/lib1.jpg");
+  background-size: 100%
+}
 </style>
